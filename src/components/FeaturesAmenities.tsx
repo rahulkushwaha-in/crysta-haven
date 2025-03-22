@@ -6,7 +6,7 @@ import {
   Clock, 
   Zap, 
   Coffee, 
-  Parking, 
+  Car, 
   ShieldCheck, 
   LifeBuoy, 
   Loader2 
@@ -74,7 +74,7 @@ const FeaturesAmenities = () => {
       description: "Fully equipped cafeteria and comfortable lounge areas"
     },
     {
-      icon: <Parking size={24} />,
+      icon: <Car size={24} />,
       title: "Ample Parking",
       description: "Dedicated covered parking spaces for tenants and visitors"
     },
