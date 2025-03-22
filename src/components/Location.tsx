@@ -1,11 +1,11 @@
 
 import React, { useEffect, useRef } from 'react';
-import { MapPin, Building, Train, Car, Clock } from 'lucide-react';
+import { MapPin, Building, Train, Car, Clock, Map } from 'lucide-react';
 
 const LocationFeature = ({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) => {
   return (
-    <div className="flex items-start gap-4 p-6 glass-panel hover-glass rounded-xl">
-      <div className="p-3 bg-crysta-blue/10 text-crysta-blue rounded-lg">
+    <div className="flex items-start gap-4 p-6 glass-panel hover-glass rounded-xl group hover:-translate-y-1 transition-all duration-300">
+      <div className="p-3 bg-crysta-blue/10 text-crysta-blue rounded-lg group-hover:bg-crysta-blue/20 transition-colors">
         {icon}
       </div>
       <div>
@@ -18,6 +18,7 @@ const LocationFeature = ({ icon, title, description }: { icon: React.ReactNode, 
 
 const Location = () => {
   const sectionRef = useRef<HTMLElement>(null);
+  const mapRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -81,12 +82,17 @@ const Location = () => {
         
         <div className="flex flex-col lg:flex-row gap-10 items-center">
           {/* Map and Location */}
-          <div className="lg:w-1/2 h-[400px] w-full relative opacity-0 animate-on-scroll">
+          <div className="lg:w-1/2 h-[450px] w-full relative opacity-0 animate-on-scroll">
             <div className="absolute -top-4 -left-4 w-64 h-64 bg-crysta-blue/10 rounded-full mix-blend-multiply filter blur-xl animate-pulse-slow"></div>
             <div className="absolute -bottom-8 -right-4 w-64 h-64 bg-crysta-blue/10 rounded-full mix-blend-multiply filter blur-xl animate-pulse-slow" style={{ animationDelay: '1s' }}></div>
             
             <div className="relative h-full w-full">
-              <div className="h-full w-full glass-panel rounded-xl overflow-hidden border border-crysta-blue/10">
+              <div className="h-full w-full glass-panel rounded-xl overflow-hidden border border-crysta-blue/20 shadow-lg">
+                <div className="absolute top-4 left-4 z-10 flex items-center gap-2 bg-white/90 py-1.5 px-3 rounded-full shadow-md">
+                  <Map size={18} className="text-crysta-blue" />
+                  <span className="text-xs font-medium text-crysta-dark">Crysta Investment, C-30, Sector 63</span>
+                </div>
+                
                 <iframe 
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3502.0040602301463!2d77.37492861464485!3d28.627328682423493!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390ce551491b3ce7%3A0x7335d9fcfd4d9db!2sSector%2063%2C%20Noida%2C%20Uttar%20Pradesh!5e0!3m2!1sen!2sin!4v1651234567890!5m2!1sen!2sin" 
                   width="100%" 
@@ -96,6 +102,7 @@ const Location = () => {
                   loading="lazy" 
                   referrerPolicy="no-referrer-when-downgrade"
                   title="Crysta Investment Location Map"
+                  className="grayscale-[30%] hover:grayscale-0 transition-all duration-500"
                 >
                 </iframe>
               </div>

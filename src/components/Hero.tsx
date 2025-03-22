@@ -1,9 +1,33 @@
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
+import { 
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+} from '@/components/ui/carousel';
+
+const heroImages = [
+  "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1497215842964-222b430dc094?auto=format&fit=crop&q=80",
+];
 
 const Hero = () => {
   const heroRef = useRef<HTMLDivElement>(null);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  
+  useEffect(() => {
+    // Auto-slide functionality
+    const slideInterval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroImages.length);
+    }, 5000);
+    
+    return () => clearInterval(slideInterval);
+  }, []);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -58,7 +82,7 @@ const Hero = () => {
 
       <div className="section-padding w-full flex flex-col lg:flex-row items-center justify-between gap-12">
         {/* Text Content */}
-        <div className="flex-1 max-w-2xl">
+        <div className="flex-1 max-w-2xl z-10">
           <p className="text-sm md:text-base font-medium text-crysta-blue mb-2 opacity-0 animate-slide-in" style={{ '--animation-order': 0 } as React.CSSProperties}>
             PREMIUM OFFICE SPACES IN NOIDA
           </p>
@@ -85,20 +109,51 @@ const Hero = () => {
           </div>
         </div>
         
-        {/* Image/Graphic */}
-        <div className="flex-1 relative h-[400px] md:h-[500px] w-full max-w-xl">
-          <div className="absolute inset-0 glass-panel rounded-2xl overflow-hidden opacity-0 animate-slide-in" style={{ '--animation-order': 4 } as React.CSSProperties}>
-            <img 
-              src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&q=80" 
-              alt="Modern Office Space" 
-              className="object-cover h-full w-full"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-crysta-dark/50 to-transparent flex flex-col justify-end p-6">
-              <span className="text-white/90 text-xs font-medium uppercase tracking-wide">Featured Space</span>
-              <h3 className="text-white text-xl font-semibold mt-1">Executive Office Suite</h3>
-              <p className="text-white/80 text-sm mt-1">Fully furnished, ready to move in</p>
+        {/* Image Carousel */}
+        <div className="flex-1 relative h-[400px] md:h-[500px] w-full max-w-xl z-10">
+          <Carousel
+            className="w-full h-full opacity-0 animate-slide-in"
+            style={{ '--animation-order': 4 } as React.CSSProperties}
+          >
+            <CarouselContent className="h-full">
+              {heroImages.map((image, index) => (
+                <CarouselItem key={index} className="h-full">
+                  <div className="relative h-full w-full">
+                    <div className="absolute inset-0 glass-panel rounded-2xl overflow-hidden">
+                      <img 
+                        src={image} 
+                        alt={`Modern Office Space ${index + 1}`} 
+                        className="object-cover h-full w-full"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-crysta-dark/50 to-transparent flex flex-col justify-end p-6">
+                        <span className="text-white/90 text-xs font-medium uppercase tracking-wide">Featured Space</span>
+                        <h3 className="text-white text-xl font-semibold mt-1">Executive Office Suite</h3>
+                        <p className="text-white/80 text-sm mt-1">Fully furnished, ready to move in</p>
+                      </div>
+                    </div>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            
+            <CarouselPrevious className="absolute left-4 bg-white/80 hover:bg-white border-none" />
+            <CarouselNext className="absolute right-4 bg-white/80 hover:bg-white border-none" />
+            
+            {/* Carousel Indicators */}
+            <div className="absolute -bottom-8 left-0 right-0 flex justify-center gap-2">
+              {heroImages.map((_, index) => (
+                <button
+                  key={index}
+                  className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                    currentSlide === index ? 'bg-crysta-blue scale-125' : 'bg-crysta-gray/40'
+                  }`}
+                  onClick={() => setCurrentSlide(index)}
+                  aria-label={`Go to slide ${index + 1}`}
+                />
+              ))}
             </div>
-          </div>
+          </Carousel>
+          
           <div 
             className="absolute -bottom-4 -right-4 h-full w-full rounded-2xl border border-crysta-blue/20 opacity-0 animate-slide-in" 
             style={{ '--animation-order': 5 } as React.CSSProperties}
