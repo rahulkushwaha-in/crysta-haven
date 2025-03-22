@@ -9,7 +9,7 @@ import FeaturesAmenities from '@/components/FeaturesAmenities';
 import Location from '@/components/Location';
 import ContactForm from '@/components/ContactForm';
 import Footer from '@/components/Footer';
-import { ArrowUp } from 'lucide-react';
+import { ArrowUp, MessageSquare } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const Index = () => {
@@ -58,6 +58,18 @@ const Index = () => {
       >
         <ArrowUp size={20} />
       </button>
+      
+      {/* WhatsApp Contact Button */}
+      <a
+        href="https://wa.me/911234567890?text=I'm%20interested%20in%20Crysta%20Investment%20office%20spaces"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-8 left-8 p-4 bg-green-500 text-white rounded-full shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 z-40 flex items-center justify-center"
+        aria-label="Contact via WhatsApp"
+      >
+        <MessageSquare size={24} />
+        <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-ping"></span>
+      </a>
     </main>
   );
 };

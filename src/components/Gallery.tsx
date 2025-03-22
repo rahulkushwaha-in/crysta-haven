@@ -1,11 +1,9 @@
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { 
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselPrevious,
-  CarouselNext,
 } from '@/components/ui/carousel';
 
 const galleryImages = [
@@ -43,6 +41,9 @@ const galleryImages = [
 
 const Gallery = () => {
   const sectionRef = useRef<HTMLElement>(null);
+  const [autoScroll, setAutoScroll] = useState(true);
+  const autoScrollRef = useRef<NodeJS.Timeout | null>(null);
+  const carouselRef = useRef<HTMLDivElement | null>(null);
   
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -50,6 +51,9 @@ const Gallery = () => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add('animate-slide-in');
+            setAutoScroll(true);
+          } else {
+            setAutoScroll(false);
           }
         });
       },
@@ -59,10 +63,46 @@ const Gallery = () => {
     const elementsToAnimate = sectionRef.current?.querySelectorAll('.animate-on-scroll');
     elementsToAnimate?.forEach((el) => observer.observe(el));
     
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+    
     return () => {
       elementsToAnimate?.forEach((el) => observer.unobserve(el));
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
     };
   }, []);
+
+  // Auto-scroll effect
+  useEffect(() => {
+    if (autoScroll && carouselRef.current) {
+      const scrollAmount = 1;
+      let scrollPosition = 0;
+      
+      const scroll = () => {
+        if (!carouselRef.current) return;
+        
+        scrollPosition += scrollAmount;
+        carouselRef.current.scrollLeft += scrollAmount;
+        
+        // Reset scroll position when it reaches end
+        if (scrollPosition >= carouselRef.current.scrollWidth - carouselRef.current.clientWidth) {
+          scrollPosition = 0;
+          carouselRef.current.scrollLeft = 0;
+        }
+      };
+      
+      autoScrollRef.current = setInterval(scroll, 30);
+    }
+    
+    return () => {
+      if (autoScrollRef.current) {
+        clearInterval(autoScrollRef.current);
+      }
+    };
+  }, [autoScroll]);
 
   return (
     <section id="gallery" ref={sectionRef} className="py-20 bg-white">
@@ -75,35 +115,37 @@ const Gallery = () => {
           </p>
         </div>
         
-        <div className="opacity-0 animate-on-scroll">
-          <Carousel
-            opts={{
-              align: "start",
-              loop: true,
-            }}
-            className="w-full"
+        <div className="opacity-0 animate-on-scroll relative overflow-hidden">
+          <div 
+            ref={carouselRef}
+            className="flex gap-4 overflow-x-auto scrollbar-hide pb-8 pt-2 px-2 -mx-2 scroll-smooth"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            onMouseEnter={() => setAutoScroll(false)}
+            onMouseLeave={() => setAutoScroll(true)}
           >
-            <CarouselContent className="-ml-2 md:-ml-4">
-              {galleryImages.map((image, index) => (
-                <CarouselItem key={index} className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
-                  <div className="h-[300px] w-full relative overflow-hidden rounded-xl group">
-                    <img 
-                      src={image.src} 
-                      alt={image.alt} 
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <div className="p-4 text-white">
-                        <h3 className="font-semibold text-lg">{image.title}</h3>
-                      </div>
-                    </div>
+            {galleryImages.map((image, index) => (
+              <div
+                key={index}
+                className="flex-shrink-0 w-[280px] sm:w-[320px] md:w-[400px] h-[300px] relative overflow-hidden rounded-xl group transition-all duration-500"
+              >
+                <img 
+                  src={image.src} 
+                  alt={image.alt} 
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="p-6 text-white">
+                    <h3 className="font-semibold text-xl">{image.title}</h3>
+                    <p className="text-white/80 mt-1">{image.alt}</p>
                   </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="hidden md:flex -left-12 bg-white hover:bg-crysta-blue hover:text-white" />
-            <CarouselNext className="hidden md:flex -right-12 bg-white hover:bg-crysta-blue hover:text-white" />
-          </Carousel>
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          {/* Gradient overlays for infinite scroll effect */}
+          <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white to-transparent z-10"></div>
+          <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent z-10"></div>
         </div>
       </div>
     </section>

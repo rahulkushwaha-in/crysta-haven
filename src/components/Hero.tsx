@@ -1,13 +1,6 @@
 
 import React, { useEffect, useRef, useState } from 'react';
-import { ArrowRight } from 'lucide-react';
-import { 
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselPrevious,
-  CarouselNext,
-} from '@/components/ui/carousel';
+import { ArrowRight, Zap, MapPin, Building, Shield } from 'lucide-react';
 
 const heroImages = [
   "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&q=80",
@@ -16,15 +9,35 @@ const heroImages = [
   "https://images.unsplash.com/photo-1497215842964-222b430dc094?auto=format&fit=crop&q=80",
 ];
 
+const featureHighlights = [
+  {
+    icon: <Zap size={20} />,
+    text: "Premium Location"
+  },
+  {
+    icon: <MapPin size={20} />,
+    text: "Sector 63, Noida"
+  },
+  {
+    icon: <Building size={20} />,
+    text: "500-5000 sq.ft"
+  },
+  {
+    icon: <Shield size={20} />,
+    text: "24/7 Security"
+  },
+];
+
 const Hero = () => {
+  const [activeSlide, setActiveSlide] = useState(0);
+  const slidesRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
-  const [currentSlide, setCurrentSlide] = useState(0);
   
   useEffect(() => {
     // Auto-slide functionality
     const slideInterval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % heroImages.length);
-    }, 5000);
+      setActiveSlide((prev) => (prev + 1) % heroImages.length);
+    }, 3000);
     
     return () => clearInterval(slideInterval);
   }, []);
@@ -57,116 +70,98 @@ const Hero = () => {
     <section 
       id="home" 
       ref={heroRef}
-      className="min-h-screen relative flex items-center overflow-hidden pt-20"
+      className="min-h-screen relative flex items-center overflow-hidden"
       style={{ perspective: '1000px' }}
     >
-      {/* Background Elements */}
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute right-[10%] top-[20%] w-64 h-64 bg-crysta-blue/10 rounded-full blur-3xl animate-pulse-slow"></div>
-        <div className="absolute left-[5%] bottom-[10%] w-96 h-96 bg-crysta-light-blue/10 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '1s' }}></div>
+      {/* Full-width background image carousel */}
+      <div className="absolute inset-0 w-full h-full">
+        <div ref={slidesRef} className="relative w-full h-full">
+          {heroImages.map((image, index) => (
+            <div
+              key={index}
+              className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ${
+                activeSlide === index ? 'opacity-100' : 'opacity-0'
+              }`}
+            >
+              <div className="absolute inset-0 bg-crysta-dark/50 z-10"></div>
+              <img
+                src={image}
+                alt={`Office Space ${index + 1}`}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Content overlay */}
+      <div className="section-padding relative z-20 w-full text-white py-20">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col items-start max-w-2xl">
+            {/* Feature highlights */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 mb-6 w-full opacity-0 animate-slide-in" style={{ '--animation-order': 0 } as React.CSSProperties}>
+              {featureHighlights.map((feature, index) => (
+                <div key={index} className="bg-white/10 backdrop-blur-sm rounded-lg p-3 flex items-center gap-2 border border-white/20">
+                  <div className="text-crysta-blue">{feature.icon}</div>
+                  <span className="text-sm md:text-base font-medium">{feature.text}</span>
+                </div>
+              ))}
+            </div>
+            
+            <p className="text-sm md:text-base font-medium text-crysta-blue mb-2 opacity-0 animate-slide-in" style={{ '--animation-order': 1 } as React.CSSProperties}>
+              PREMIUM OFFICE SPACES IN NOIDA
+            </p>
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-white opacity-0 animate-slide-in" style={{ '--animation-order': 2 } as React.CSSProperties}>
+              Elevate Your Business with Crysta Investment
+            </h1>
+            <p className="text-white/90 text-lg max-w-xl mb-8 opacity-0 animate-slide-in" style={{ '--animation-order': 3 } as React.CSSProperties}>
+              Strategically located at C-30, Sector 63, Noida, we offer premium office spaces ranging from 500 to 5000 square feet, designed to empower your business growth.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 mt-4 opacity-0 animate-slide-in" style={{ '--animation-order': 4 } as React.CSSProperties}>
+              <a 
+                href="#spaces" 
+                className="custom-button bg-crysta-blue hover:bg-crysta-blue/90 text-white px-6 py-3 rounded-lg font-medium hover:shadow-lg hover:shadow-crysta-blue/20 transition-all duration-300 hover:-translate-y-1"
+              >
+                Explore Spaces
+              </a>
+              <a 
+                href="#contact" 
+                className="custom-button bg-white/10 backdrop-blur-sm text-white border border-white/20 px-6 py-3 rounded-lg font-medium group hover:bg-white/20 transition-all duration-300 hover:-translate-y-1"
+              >
+                Book a Tour
+                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Carousel Indicators */}
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 flex justify-center gap-2">
+        {heroImages.map((_, index) => (
+          <button
+            key={index}
+            className={`w-3 h-3 rounded-full transition-all duration-300 ${
+              activeSlide === index ? 'bg-crysta-blue scale-125 w-8' : 'bg-white/50'
+            }`}
+            onClick={() => setActiveSlide(index)}
+            aria-label={`Go to slide ${index + 1}`}
+          />
+        ))}
       </div>
       
       {/* 3D Elements that move with mouse */}
       <div 
-        className="absolute inset-0 -z-10 pointer-events-none"
+        className="absolute inset-0 pointer-events-none z-10"
         style={{ 
           transform: 'translateX(var(--move-x, 0)) translateY(var(--move-y, 0)) translateZ(0)',
           transition: 'transform 0.1s ease-out'
         }}
       >
-        <div className="absolute right-[15%] top-[25%] w-20 h-20 bg-crysta-blue/20 rounded-xl"></div>
-        <div className="absolute left-[20%] top-[15%] w-16 h-16 bg-crysta-light-blue/20 rounded-xl"></div>
-        <div className="absolute left-[10%] bottom-[30%] w-12 h-12 bg-crysta-blue/20 rounded-xl"></div>
-        <div className="absolute right-[25%] bottom-[20%] w-24 h-24 bg-crysta-blue/20 rounded-xl"></div>
-      </div>
-
-      <div className="section-padding w-full flex flex-col lg:flex-row items-center justify-between gap-12">
-        {/* Text Content */}
-        <div className="flex-1 max-w-2xl z-10">
-          <p className="text-sm md:text-base font-medium text-crysta-blue mb-2 opacity-0 animate-slide-in" style={{ '--animation-order': 0 } as React.CSSProperties}>
-            PREMIUM OFFICE SPACES IN NOIDA
-          </p>
-          <h1 className="section-title mb-6 opacity-0 animate-slide-in" style={{ '--animation-order': 1 } as React.CSSProperties}>
-            Elevate Your Business with Crysta Investment
-          </h1>
-          <p className="section-description opacity-0 animate-slide-in" style={{ '--animation-order': 2 } as React.CSSProperties}>
-            Strategically located at C-30, Sector 63, Noida, we offer premium office spaces ranging from 500 to 5000 square feet, designed to empower your business growth.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 mt-8 opacity-0 animate-slide-in" style={{ '--animation-order': 3 } as React.CSSProperties}>
-            <a 
-              href="#spaces" 
-              className="custom-button bg-crysta-blue hover:bg-crysta-blue/90 text-white px-6 py-3 rounded-lg font-medium hover:shadow-lg hover:shadow-crysta-blue/20 transition-all duration-300 hover:-translate-y-1"
-            >
-              Explore Spaces
-            </a>
-            <a 
-              href="#contact" 
-              className="custom-button bg-crysta-light text-crysta-dark border border-crysta-blue/20 px-6 py-3 rounded-lg font-medium group hover:bg-crysta-blue/5 transition-all duration-300 hover:-translate-y-1"
-            >
-              Book a Tour
-              <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-            </a>
-          </div>
-        </div>
-        
-        {/* Image Carousel */}
-        <div className="flex-1 relative h-[400px] md:h-[500px] w-full max-w-xl z-10">
-          <Carousel
-            className="w-full h-full opacity-0 animate-slide-in"
-            style={{ '--animation-order': 4 } as React.CSSProperties}
-          >
-            <CarouselContent className="h-full">
-              {heroImages.map((image, index) => (
-                <CarouselItem key={index} className="h-full">
-                  <div className="relative h-full w-full">
-                    <div className="absolute inset-0 glass-panel rounded-2xl overflow-hidden">
-                      <img 
-                        src={image} 
-                        alt={`Modern Office Space ${index + 1}`} 
-                        className="object-cover h-full w-full"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-crysta-dark/50 to-transparent flex flex-col justify-end p-6">
-                        <span className="text-white/90 text-xs font-medium uppercase tracking-wide">Featured Space</span>
-                        <h3 className="text-white text-xl font-semibold mt-1">Executive Office Suite</h3>
-                        <p className="text-white/80 text-sm mt-1">Fully furnished, ready to move in</p>
-                      </div>
-                    </div>
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            
-            <CarouselPrevious className="absolute left-4 bg-white/80 hover:bg-white border-none" />
-            <CarouselNext className="absolute right-4 bg-white/80 hover:bg-white border-none" />
-            
-            {/* Carousel Indicators */}
-            <div className="absolute -bottom-8 left-0 right-0 flex justify-center gap-2">
-              {heroImages.map((_, index) => (
-                <button
-                  key={index}
-                  className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
-                    currentSlide === index ? 'bg-crysta-blue scale-125' : 'bg-crysta-gray/40'
-                  }`}
-                  onClick={() => setCurrentSlide(index)}
-                  aria-label={`Go to slide ${index + 1}`}
-                />
-              ))}
-            </div>
-          </Carousel>
-          
-          <div 
-            className="absolute -bottom-4 -right-4 h-full w-full rounded-2xl border border-crysta-blue/20 opacity-0 animate-slide-in" 
-            style={{ '--animation-order': 5 } as React.CSSProperties}
-          ></div>
-        </div>
-      </div>
-      
-      {/* Scrolling indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center opacity-0 animate-fade-in" style={{ animationDelay: '2s' }}>
-        <span className="text-sm text-crysta-gray mb-2">Scroll to explore</span>
-        <div className="w-6 h-10 border-2 border-crysta-gray rounded-full flex justify-center">
-          <div className="w-1.5 h-3 bg-crysta-gray rounded-full mt-2 animate-float"></div>
-        </div>
+        <div className="absolute right-[15%] top-[25%] w-20 h-20 bg-crysta-blue/20 rounded-xl backdrop-blur-sm"></div>
+        <div className="absolute left-[20%] top-[15%] w-16 h-16 bg-crysta-light-blue/20 rounded-xl backdrop-blur-sm"></div>
+        <div className="absolute left-[10%] bottom-[30%] w-12 h-12 bg-crysta-blue/20 rounded-xl backdrop-blur-sm"></div>
+        <div className="absolute right-[25%] bottom-[20%] w-24 h-24 bg-crysta-blue/20 rounded-xl backdrop-blur-sm"></div>
       </div>
     </section>
   );

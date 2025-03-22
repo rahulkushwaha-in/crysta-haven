@@ -42,28 +42,28 @@ const About = () => {
           <h2 className="section-title mb-4 opacity-0 animate-on-scroll" style={{ '--animation-delay': '0.1s' } as React.CSSProperties}>The Trusted Legacy of Crysta Investment</h2>
         </div>
         
-        <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-center justify-between">
-          {/* Left side - Image with floating effect */}
-          <div className="lg:w-1/2 relative order-2 lg:order-1">
+        <div className="flex flex-col-reverse lg:flex-row gap-12 lg:gap-16 items-center justify-between">
+          {/* Left side - Image with floating effect - Order changed for mobile */}
+          <div className="lg:w-1/2 relative w-full">
             <div className="opacity-0 animate-on-scroll relative">
               <div className="absolute -top-4 -left-4 w-64 h-64 bg-crysta-blue/10 rounded-full mix-blend-multiply filter blur-xl animate-pulse-slow"></div>
               <div className="absolute -bottom-8 -right-4 w-64 h-64 bg-crysta-blue/10 rounded-full mix-blend-multiply filter blur-xl animate-pulse-slow" style={{ animationDelay: '1s' }}></div>
               
               <div className="relative">
-                <div className="h-[400px] sm:h-[500px] w-full md:w-[90%] mx-auto rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <div className="h-[400px] sm:h-[500px] w-full rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
                   <img 
                     src="https://images.unsplash.com/photo-1605810230434-7631ac76ec81?auto=format&fit=crop&q=80" 
                     alt="Crysta Investment Office" 
                     className="h-full w-full object-cover"
                   />
                 </div>
-                <div className="absolute -bottom-6 -right-6 h-full w-full md:w-[90%] mx-auto border-2 border-crysta-blue/30 rounded-2xl"></div>
+                <div className="absolute -bottom-6 -right-6 h-full w-full border-2 border-crysta-blue/30 rounded-2xl"></div>
               </div>
             </div>
           </div>
           
           {/* Right side - Text content */}
-          <div className="lg:w-1/2 order-1 lg:order-2">
+          <div className="lg:w-1/2">
             <div className="opacity-0 animate-on-scroll" style={{ '--animation-delay': '0.2s' } as React.CSSProperties}>
               <p className="section-description">
                 Crysta Investment has established itself as a premier provider of commercial office spaces in Noida. Located at C-30, Sector 63, we offer businesses of all sizes the perfect environment to thrive and grow.
